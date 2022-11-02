@@ -32,7 +32,7 @@ classifiers = [  #! Update me
 [tool.poetry.dependencies]
 python = "^3.7.2"
 importlib_metadata = {version = "^5.0.0", python = "<3.8"}
-openai = "^0.24.0"
+openai = "^0.25.0"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.1"

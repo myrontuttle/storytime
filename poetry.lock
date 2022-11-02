@@ -354,7 +354,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "openai"
-version = "0.24.0"
+version = "0.25.0"
 description = "Python client library for the OpenAI API"
 category = "main"
 optional = false
@@ -406,10 +406,10 @@ python-versions = ">=3.7.1"
 
 [package.dependencies]
 numpy = [
-    {version = ">=1.21.0", markers = "python_version >= \"3.10\""},
     {version = ">=1.17.3", markers = "platform_machine != \"aarch64\" and platform_machine != \"arm64\" and python_version < \"3.10\""},
     {version = ">=1.19.2", markers = "platform_machine == \"aarch64\" and python_version < \"3.10\""},
     {version = ">=1.20.0", markers = "platform_machine == \"arm64\" and python_version < \"3.10\""},
+    {version = ">=1.21.0", markers = "python_version >= \"3.10\""},
 ]
 python-dateutil = ">=2.7.3"
 pytz = ">=2017.3"
@@ -871,7 +871,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.2"
-content-hash = "51c0b1971a61712cbec5bd7027cd7d250460d6e0e5464c9ec9bc647057973419"
+content-hash = "56909b51a89b21481468edd2db9ba984a9be7240a6685ac32e0b396e876efe48"
 
 [metadata.files]
 astroid = [
@@ -1127,7 +1127,7 @@ numpy = [
     {file = "numpy-1.21.1.zip", hash = "sha256:dff4af63638afcc57a3dfb9e4b26d434a7a602d225b42d746ea7fe2edf1342fd"},
 ]
 openai = [
-    {file = "openai-0.24.0.tar.gz", hash = "sha256:4ef862f265b23b37da0d0ef9b9223f95b465d7138e28d5f61b0870a9ebe75dac"},
+    {file = "openai-0.25.0.tar.gz", hash = "sha256:59ac6531e4f7bf8e9a53186e853d9ffb1d5f07973ecb4f7d273163a314814510"},
 ]
 openpyxl = [
     {file = "openpyxl-3.0.10-py2.py3-none-any.whl", hash = "sha256:0ab6d25d01799f97a9464630abacbb34aafecdcaa0ef3cba6d6b3499867d0355"},
