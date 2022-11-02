@@ -1,83 +1,20 @@
 # storytime
 
-<div align="center">
+<div>
 
-[![Build status](https://github.com/myrontuttle/storytime/workflows/build/badge.svg?branch=master&event=push)](https://github.com/myrontuttle/storytime/actions?query=workflow%3Abuild)
-[![Python Version](https://img.shields.io/pypi/pyversions/storytime.svg)](https://pypi.org/project/storytime/)
+[![Build status](https://github.com/myrontuttle/storytime/workflows/build/badge.svg?branch=main&event=push)](https://github.com/myrontuttle/storytime/actions?query=workflow%3Abuild)
 [![Dependencies Status](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)](https://github.com/myrontuttle/storytime/pulls?utf8=%E2%9C%93&q=is%3Apr%20author%3Aapp%2Fdependabot)
-
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Security: bandit](https://img.shields.io/badge/security-bandit-green.svg)](https://github.com/PyCQA/bandit)
 [![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/myrontuttle/storytime/blob/master/.pre-commit-config.yaml)
 [![Semantic Versions](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--versions-e10079.svg)](https://github.com/myrontuttle/storytime/releases)
-[![License](https://img.shields.io/github/license/myrontuttle/storytime)](https://github.com/myrontuttle/storytime/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/myrontuttle/storytime)](https://github.com/myrontuttle/storytime/blob/main/LICENSE)
 ![Coverage Report](assets/images/coverage.svg)
+<!-- [![Python Version](https://img.shields.io/pypi/pyversions/storytime.svg)](https://pypi.org/project/storytime/) -->
 
 Storytime is an experiment in continuous storytelling.
 
 </div>
-
-## Very first steps
-
-### Initialize your code
-
-1. Initialize `git` inside your repo:
-
-```bash
-cd storytime && git init
-```
-
-2. If you don't have `Poetry` installed run:
-
-```bash
-make poetry-download
-```
-
-3. Initialize poetry and install `pre-commit` hooks:
-
-```bash
-make install
-make pre-commit-install
-```
-
-4. Run the codestyle:
-
-```bash
-make codestyle
-```
-
-5. Upload initial code to GitHub:
-
-```bash
-git add .
-git commit -m ":tada: Initial commit"
-git branch -M main
-git remote add origin https://github.com/myrontuttle/storytime.git
-git push -u origin main
-```
-
-### Set up bots
-
-- Set up [Dependabot](https://docs.github.com/en/github/administering-a-repository/enabling-and-disabling-version-updates#enabling-github-dependabot-version-updates) to ensure you have the latest dependencies.
-- Set up [Stale bot](https://github.com/apps/stale) for automatic issue closing.
-
-### Poetry
-
-Want to know more about Poetry? Check [its documentation](https://python-poetry.org/docs/).
-
-<details>
-<summary>Details about Poetry</summary>
-<p>
-
-Poetry's [commands](https://python-poetry.org/docs/cli/#commands) are very intuitive and easy to learn, like:
-
-- `poetry add numpy@latest`
-- `poetry run pytest`
-- `poetry publish --build`
-
-etc
-</p>
-</details>
 
 ### Building and releasing your package
 
@@ -221,6 +158,9 @@ Update all dev libraries to the latest version using one comand
 make update-dev-deps
 ```
 
+</p>
+</details>
+
 <details>
 <summary>4. Code security</summary>
 <p>
@@ -234,9 +174,6 @@ This command launches `Poetry` integrity checks as well as identifies security i
 ```bash
 make check-safety
 ```
-
-</p>
-</details>
 
 </p>
 </details>
@@ -380,7 +317,7 @@ This project is licensed under the terms of the `MIT` license. See [LICENSE](htt
 
 ```bibtex
 @misc{storytime,
-  author = {myrontuttle},
+  author = {Myron Tuttle},
   title = {Storytime is an experiment in continuous storytelling.},
   year = {2022},
   publisher = {GitHub},
