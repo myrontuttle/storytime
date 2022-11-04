@@ -55,7 +55,6 @@ mypy:
 .PHONY: check-safety
 check-safety:
 	poetry check
-	poetry run safety check --full-report
 	poetry run bandit -ll --recursive storytime tests
 
 .PHONY: lint
