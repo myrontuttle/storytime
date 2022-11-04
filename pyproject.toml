@@ -33,8 +33,9 @@ classifiers = [  #! Update me
 python = "^3.7.2"
 importlib_metadata = {version = "^5.0.0", python = "<3.8"}
 openai = "^0.24.0"
+pytest = "^7.2.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 bandit = "^1.7.1"
 black = {version = "^22.10.0", allow-prereleases = true}
 darglint = "^1.8.1"
@@ -46,10 +47,10 @@ pydocstyle = "^6.1.1"
 pylint = "^2.15.5"
 pytest = "^7.2.0"
 pyupgrade = "^3.2.0"
-safety = "^2.3.1"
 coverage = "^6.1.2"
 pytest-html = "^3.1.1"
 pytest-cov = "^4.0.0"
+safety = "^2.3.1"
 
 [tool.black]
 # https://github.com/psf/black
@@ -119,6 +120,7 @@ warn_unused_ignores = true
 norecursedirs =["hooks", "*.egg", ".eggs", "dist", "build", "docs", ".tox", ".git", "__pycache__"]
 doctest_optionflags = ["NUMBER", "NORMALIZE_WHITESPACE", "IGNORE_EXCEPTION_DETAIL"]
 
+log_cli = true
 # Extra options:
 addopts = [
   "--strict-markers",
