@@ -1,3 +1,5 @@
+from typing import Optional
+
 import logging
 import os
 
@@ -11,29 +13,56 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-class GPT3:
-    """GPT-3 service wrapper."""
-
-    def __init__(self):
-        """Sets API Key if available as environment variable."""
-        if "OPENAI_API_KEY" not in os.environ:
-            logger.critical(
-                "OPENAI_API_KEY does not exist as environment variable.",
-            )
-            logger.debug(os.environ)
-        self.api_key = os.getenv("OPENAI_API_KEY")
-
-    def gpt3_request(self, prompt: str) -> str:
-        """Sends request to GPT-3 service and returns response."""
-        openai.api_key = self.api_key
-        response = openai.Completion.create(
-            engine="text-davinci-002",
-            prompt=prompt,
-            temperature=0.5,
-            max_tokens=256,
-            top_p=1,
-            frequency_penalty=0.2,
-            presence_penalty=0,
+def get_api_key_from_env() -> Optional[str]:
+    """Returns API Key if available as environment variable."""
+    if "OPENAI_API_KEY" not in os.environ:
+        logger.critical(
+            "OPENAI_API_KEY does not exist as environment variable.",
         )
-        logger.debug(f"{prompt} ... + {response}")
-        return str(response.choices[0].text)
+        logger.debug(os.environ)
+    return os.getenv("OPENAI_API_KEY")
+
+
+def generate_text(
+    prompt: str,
+    temp: Optional[float] = 0.8,
+    max_tokens: Optional[int] = 1256,
+    top_p: Optional[float] = 1,
+) -> str:
+    """Sends request to GPT-3 Completion service and returns response."""
+    openai.api_key = get_api_key_from_env()
+    try:
+        response = openai.Completion.create(
+            engine="davinci",
+            prompt=prompt,
+            temperature=temp,
+            max_tokens=max_tokens,
+            top_p=top_p,
+            frequency_penalty=0,
+            presence_penalty=0,
+            stop=["\n\n"],
+        )
+        return response["choices"][0]["text"]
+    except Exception as e:
+        logger.error(e)
+        logger.debug(
+            f" from: {prompt} with temp: {temp}, "
+            f" max_tokens: {max_tokens}, and top_p: {top_p}"
+        )
+        return ""
+
+
+def generate_image(prompt: str) -> str:
+    """Sends request to GPT-3 Image service and returns response."""
+    openai.api_key = get_api_key_from_env()
+    try:
+        response = openai.Image.create(
+            prompt=prompt,
+            n=1,
+            size="1024x1024",
+        )
+        return response["data"][0]["url"]
+    except Exception as e:
+        logger.error(e)
+        logger.debug(f" from: {prompt}")
+        return ""

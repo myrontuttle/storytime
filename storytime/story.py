@@ -1,9 +1,13 @@
 from typing import List
 
+import json
+import os.path
 import random
 
+import jsonpickle
+
 from storytime.character import Character
-from storytime.gpt3 import GPT3
+from storytime.gpt3 import generate_text
 from storytime.scene import Scene
 from storytime.time_period import TimePeriod
 
@@ -148,6 +152,8 @@ class Story:
         "Responsibility",
         "Tradition",
         # Technology & Science
+        # TODO: Consider removing these or only making them available for
+        #  Contemporary and Future stories.
         "Artificial Intelligence",
         "Augmented Reality",
         "Genetic Engineering",
@@ -355,9 +361,6 @@ class Story:
 
     def __init__(self):
         """Initialize the class."""
-        # Initialize GPT-3
-        self.gpt3 = GPT3()
-
         # Select a target audience
         self.target_audience = random.choice(self.target_audiences)
 
@@ -372,7 +375,7 @@ class Story:
         # Make a thematic statement
         # ts_prompt = f"Write a thematic statement based on the concepts of " \
         #            f" {self.themes[0]} and {self.themes[1]}."
-        # self.thematic_statement = self.gpt3.gpt3_request(ts_prompt)
+        # self.thematic_statement = self.gpt3.generate_text(ts_prompt)
 
         # Get a random narrative structure and associated plot elements
         self.narrative_structure = random.choice(
@@ -394,12 +397,12 @@ class Story:
             "love interest": Character(self.time_period.era),
             "foil": Character(self.time_period.era),
         }
-        for i in range(random.randint(0, 5)):
+        for i in range(random.randint(0, 3)):
             self.characters[f"tertiary {i}"] = Character(self.time_period.era)
 
         # Generate the synopsis
         self.synopsis = (
-            f"A {self.genre} targeted at {self.target_audience}"
+            f"A {self.genre} story targeted at {self.target_audience}"
             f" during the {self.time_period.era} era. "
             f"{self.characters['protagonist']} must grapple with"
             f" themes of {self.themes[0]} and {self.themes[1]}. "
@@ -409,11 +412,14 @@ class Story:
             f"{self.time_period.season}."
         )
 
+        # Write a title
+        self.title = generate_text(f"Write a title for {self.synopsis}")
+
         # Generate the plot as a series of acts with scenes
         self.acts = []
         for act_description in self.plot_elements.values():
             scenes: List["Scene"] = []
-            total_scenes_in_act = random.randrange(2, 10, 2)
+            total_scenes_in_act = random.randrange(2, 8, 2)
             # Generate scenes for each plot element
             for i in range(total_scenes_in_act):
                 scenes.append(
@@ -435,9 +441,19 @@ class Story:
         """Return a string representation of the story."""
         full_story = self.synopsis + "\n\n"
         for act in self.acts:
+            full_story += f"Act {self.acts.index(act) + 1}\n"
             for scene in act:
+                full_story += f"Scene {act.index(scene) + 1}\n"
                 full_story += str(scene) + "\n\n"
         return full_story
+
+    def save_as_json(self):
+        """Save a JSON representation of the story."""
+        if not os.path.exists("../stories/"):
+            os.mkdir("../stories/")
+        filename = f"../stories/{self.title}.json".replace(" ", "")
+        with open(filename, "w") as write_file:
+            write_file.write(jsonpickle.encode(self, keys=True, indent=4))
 
 
 if __name__ == "__main__":

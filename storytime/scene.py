@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 import random
 
 from storytime.character import Character
+from storytime.gpt3 import generate_text
 from storytime.location import Location
 from storytime.time_period import TimePeriod
 
@@ -102,6 +103,8 @@ class Scene:
             if random.random() > 0.95:
                 self.time_period = TimePeriod.advance_era(self.time_period)
 
+        # Write the scene from scene prompts
+        self.scene_text: List[str] = []
         self.scene_setup = (
             f"As part of a {genre} appealing to "
             f"{target_audience} with the themes of "
@@ -109,36 +112,52 @@ class Scene:
             f"{scene_number_ordinal} scene of a "
             f"{total_scenes_in_act} scene act where "
             f"{act_description}"
-            f" The scene takes place in a "
+        )
+
+        # Add previous scene to scene setup
+        if previous_scenes is not None and len(previous_scenes) > 0:
+            if (
+                previous_scenes[-1].scene_text is not None
+                and len(previous_scenes[-1].scene_text) > 0
+            ):
+                # TODO: Consider adding a summary of the previous scene
+                self.scene_setup += (
+                    f" The previous scene ended with: "
+                    f"{previous_scenes[-1].scene_text[-1]}"
+                )
+
+        self.scene_setup += (
+            f" This scene takes place in a "
             f"{self.location.locale} "
             f"in a {self.location.area} area during "
             f"{self.time_period.time_of_day} of "
             f"{self.time_period.season} in the"
-            f" {self.time_period.era} "
-            f"era."
+            f" {self.time_period.era} era."
         )
         # Add characters to scene setup
         for char in list(self.characters.keys()):
             self.scene_setup += f" {self.characters[char]} is the {char}."
-        self.scene_setup += f"\n"
-
-        # TODO: Add previous scene to scene prompt
 
         # Add scene types to scene prompt
         for part in self.scene_types[self.scene_type]:
-            self.scene_setup += (
+            scene_prompt = self.scene_setup
+            scene_prompt += (
                 f"Write a part of the scene where"
                 f" {self.scene_types[self.scene_type][part]} "
+                f"Start with a paragraph that describes what "
+                f"the characters experience externally and "
+                f"then write one or more paragraphs that "
+                f"describes how the characters react to what "
+                f"happened beginning with their feelings, "
+                f"then any reflexive actions, followed by "
+                f"any rational actions and dialogue."
             )
-            self.scene_setup += (
-                "Start with a paragraph that describes what "
-                "the characters experience externally and "
-                "then write one or more paragraphs that "
-                "describes how the characters react to what "
-                "happened beginning with their feelings, "
-                "then any reflexive actions, followed by "
-                "any rational actions and dialogue.\n"
-            )
+            new_scene_text = generate_text(scene_prompt)
+            self.scene_text.append(new_scene_text)
 
     def __str__(self) -> str:
-        return self.scene_setup
+        full_scene: str = ""
+        for text in self.scene_text:
+            full_scene += "------" + "\n"  # Scene part separator
+            full_scene += str(text) + "\n"
+        return full_scene
