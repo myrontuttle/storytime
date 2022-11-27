@@ -4,6 +4,7 @@
 
 ### Module-specific ###
 stories/
+tests/stories/
 
 ### OSX ###
 # General

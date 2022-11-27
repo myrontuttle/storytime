@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Optional
 
-import json
+import logging
 import os.path
 import random
 
@@ -10,6 +10,20 @@ from storytime.character import Character
 from storytime.gpt3 import generate_text
 from storytime.scene import Scene
 from storytime.time_period import TimePeriod
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+
+logger = logging.getLogger(__name__)
+
+
+def load_from_json(filename: str) -> "Story":
+    """Load a story from a JSON file."""
+    with open(filename) as read_file:
+        new_story = jsonpickle.decode(read_file.read())
+    return new_story
 
 
 class Story:
@@ -359,13 +373,23 @@ class Story:
         "Save the Cat": save_the_cat_plot_elements,
     }
 
-    def __init__(self):
-        """Initialize the class."""
+    def __init__(
+        self,
+        target_audience: Optional[str] = None,
+        genre: Optional[str] = None,
+    ) -> None:
+        """Generate a story based on the target audience and genre."""
         # Select a target audience
-        self.target_audience = random.choice(self.target_audiences)
+        if target_audience is None:
+            self.target_audience = random.choice(self.target_audiences)
+        else:
+            self.target_audience = target_audience
 
         # Generate a random genre
-        self.genre = random.choice(self.genres)
+        if genre is None:
+            self.genre = random.choice(self.genres)
+        else:
+            self.genre = genre
 
         # Generate 2 random thematic concepts
         self.themes = []
@@ -413,13 +437,19 @@ class Story:
         )
 
         # Write a title
-        self.title = generate_text(f"Write a title for {self.synopsis}")
+        self.title = generate_text(
+            f"Write a title for {self.synopsis}", max_tokens=30
+        ).strip()
 
         # Generate the plot as a series of acts with scenes
         self.acts = []
         for act_description in self.plot_elements.values():
             scenes: List["Scene"] = []
             total_scenes_in_act = random.randrange(2, 8, 2)
+            logger.info(
+                f"Generating {total_scenes_in_act} scenes for "
+                f"{act_description}."
+            )
             # Generate scenes for each plot element
             for i in range(total_scenes_in_act):
                 scenes.append(
@@ -451,11 +481,19 @@ class Story:
         """Save a JSON representation of the story."""
         if not os.path.exists("../stories/"):
             os.mkdir("../stories/")
-        filename = f"../stories/{self.title}.json".replace(" ", "")
+        filename = (
+            f"../stories/"
+            f"{''.join(c for c in self.title if c.isalnum())}.json"
+        )
         with open(filename, "w") as write_file:
             write_file.write(jsonpickle.encode(self, keys=True, indent=4))
+        logger.info(f"Story written to {filename}")
 
 
 if __name__ == "__main__":
-    story = Story()
+    # story = Story()
+    # story.save_as_json()
+    story = load_from_json(
+        "../stories/AlphonsesStruggleAFantasyStoryofOppressionandPacifism.json"
+    )
     print(story)

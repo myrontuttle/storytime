@@ -2,6 +2,7 @@ from typing import Dict, List, Optional
 
 import random
 
+from storytime import gpt3
 from storytime.character import Character
 from storytime.gpt3 import generate_text
 from storytime.location import Location
@@ -113,7 +114,6 @@ class Scene:
             f"{total_scenes_in_act} scene act where "
             f"{act_description}"
         )
-
         # Add previous scene to scene setup
         if previous_scenes is not None and len(previous_scenes) > 0:
             if (
@@ -125,7 +125,7 @@ class Scene:
                     f" The previous scene ended with: "
                     f"{previous_scenes[-1].scene_text[-1]}"
                 )
-
+        # Add location and time of day to scene setup
         self.scene_setup += (
             f" This scene takes place in a "
             f"{self.location.locale} "
@@ -137,8 +137,7 @@ class Scene:
         # Add characters to scene setup
         for char in list(self.characters.keys()):
             self.scene_setup += f" {self.characters[char]} is the {char}."
-
-        # Add scene types to scene prompt
+        # Add scene types to scene prompt and generate scene text
         for part in self.scene_types[self.scene_type]:
             scene_prompt = self.scene_setup
             scene_prompt += (
@@ -152,7 +151,10 @@ class Scene:
                 f"then any reflexive actions, followed by "
                 f"any rational actions and dialogue."
             )
-            new_scene_text = generate_text(scene_prompt)
+            new_scene_text = generate_text(
+                scene_prompt,
+                max_tokens=(gpt3.MAX_TOKENS - int(len(scene_prompt) / 4)),
+            )
             self.scene_text.append(new_scene_text)
 
     def __str__(self) -> str:

@@ -4,6 +4,12 @@ import logging
 import os
 
 import openai
+from ratelimit import limits
+
+MODEL = "text-curie-001"
+MAX_TOKENS = 2048
+MINUTE = 60
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -23,24 +29,24 @@ def get_api_key_from_env() -> Optional[str]:
     return os.getenv("OPENAI_API_KEY")
 
 
+@limits(calls=60, period=MINUTE)
 def generate_text(
     prompt: str,
     temp: Optional[float] = 0.8,
-    max_tokens: Optional[int] = 1256,
+    max_tokens: Optional[int] = MAX_TOKENS / 2,
     top_p: Optional[float] = 1,
 ) -> str:
     """Sends request to GPT-3 Completion service and returns response."""
     openai.api_key = get_api_key_from_env()
     try:
         response = openai.Completion.create(
-            engine="davinci",
+            engine=MODEL,
             prompt=prompt,
             temperature=temp,
             max_tokens=max_tokens,
             top_p=top_p,
             frequency_penalty=0,
             presence_penalty=0,
-            stop=["\n\n"],
         )
         return response["choices"][0]["text"]
     except Exception as e:
