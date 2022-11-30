@@ -4,12 +4,13 @@ import logging
 import os
 
 import openai
-from ratelimit import limits
+from backoff import expo, on_exception
+from ratelimit import RateLimitException, limits
 
-MODEL = "text-curie-001"
+MODEL = "text-curie-001"  # "text-davinci-003"
 MAX_TOKENS = 2048
 MINUTE = 60
-
+MAX_IMAGE_PROMPT_LENGTH = 1000
 
 logging.basicConfig(
     level=logging.INFO,
@@ -29,11 +30,12 @@ def get_api_key_from_env() -> Optional[str]:
     return os.getenv("OPENAI_API_KEY")
 
 
-@limits(calls=60, period=MINUTE)
+@on_exception(expo, RateLimitException, max_tries=8)
+@limits(calls=50, period=MINUTE)
 def generate_text(
     prompt: str,
     temp: Optional[float] = 0.8,
-    max_tokens: Optional[int] = MAX_TOKENS / 2,
+    max_tokens: Optional[int] = int(MAX_TOKENS / 2),
     top_p: Optional[float] = 1,
 ) -> str:
     """Sends request to GPT-3 Completion service and returns response."""
@@ -58,14 +60,18 @@ def generate_text(
         return ""
 
 
+@on_exception(expo, RateLimitException, max_tries=8)
+@limits(calls=10, period=MINUTE)
 def generate_image(prompt: str) -> str:
     """Sends request to GPT-3 Image service and returns response."""
     openai.api_key = get_api_key_from_env()
+    if len(prompt) > MAX_IMAGE_PROMPT_LENGTH:
+        prompt = prompt[:MAX_IMAGE_PROMPT_LENGTH]
     try:
         response = openai.Image.create(
             prompt=prompt,
             n=1,
-            size="1024x1024",
+            size="512x512",
         )
         return response["data"][0]["url"]
     except Exception as e:

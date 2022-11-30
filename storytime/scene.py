@@ -9,6 +9,7 @@ from storytime.location import Location
 from storytime.time_period import TimePeriod
 
 SUFFIXES = {1: "st", 2: "nd", 3: "rd"}
+CHAR_PER_TOKEN = 3  # Average number of characters per token
 
 
 def ordinal(num):
@@ -20,6 +21,24 @@ def ordinal(num):
         # the second parameter is a default.
         suffix = SUFFIXES.get(num % 10, "th")
     return str(num) + suffix
+
+
+def summarize_text(scene_text: List[str]) -> str:
+    """Summarizes scene text."""
+    prompt = f"Summarize the following scene: {' '.join(scene_text)}"
+    return generate_text(
+        prompt,
+        max_tokens=(gpt3.MAX_TOKENS - int(len(prompt) / CHAR_PER_TOKEN)),
+    ).strip()
+
+
+def visually_summarize(scene_part: str) -> str:
+    """Describes scene visually."""
+    prompt = f"Visually summarize the following scene: {scene_part}"
+    return generate_text(
+        prompt,
+        max_tokens=(gpt3.MAX_TOKENS - int(len(prompt) / CHAR_PER_TOKEN)),
+    ).strip()
 
 
 class Scene:
@@ -62,6 +81,7 @@ class Scene:
         characters: Dict[str, Character],
         total_scenes_in_act: int,
         previous_scenes: Optional[List["Scene"]] = None,
+        area: Optional[str] = None,
     ):
         self.previous_scenes = previous_scenes
         self.scene_number = len(previous_scenes) + 1 if previous_scenes else 1
@@ -81,13 +101,16 @@ class Scene:
 
         # Randomly change the location from the prior scene
         if previous_scenes is None or len(previous_scenes) == 0:
-            self.location = Location(time_period.era)
+            self.location = Location(
+                era=time_period.era,
+                area=area,
+            )
         else:
             if random.random() > 0.6:
                 self.location = Location.new_locale(
                     previous_scenes[-1].location
                 )
-            elif random.random() > 0.9:
+            elif area is None and random.random() > 0.9:
                 self.location = Location.new_area(previous_scenes[-1].location)
             else:
                 self.location = previous_scenes[-1].location
@@ -107,7 +130,7 @@ class Scene:
         # Write the scene from scene prompts
         self.scene_text: List[str] = []
         self.scene_setup = (
-            f"As part of a {genre} appealing to "
+            f"As part of a {genre} story appealing to "
             f"{target_audience} with the themes of "
             f"{themes[0]} and {themes[1]}, in the "
             f"{scene_number_ordinal} scene of a "
@@ -116,14 +139,14 @@ class Scene:
         )
         # Add previous scene to scene setup
         if previous_scenes is not None and len(previous_scenes) > 0:
+            self.scene_summary = ""
             if (
                 previous_scenes[-1].scene_text is not None
                 and len(previous_scenes[-1].scene_text) > 0
             ):
-                # TODO: Consider adding a summary of the previous scene
                 self.scene_setup += (
-                    f" The previous scene ended with: "
-                    f"{previous_scenes[-1].scene_text[-1]}"
+                    f" The previous scene was about: "
+                    f"{previous_scenes[-1].scene_summary}"
                 )
         # Add location and time of day to scene setup
         self.scene_setup += (
@@ -153,9 +176,15 @@ class Scene:
             )
             new_scene_text = generate_text(
                 scene_prompt,
-                max_tokens=(gpt3.MAX_TOKENS - int(len(scene_prompt) / 4)),
+                max_tokens=(
+                    gpt3.MAX_TOKENS - int(len(scene_prompt) / CHAR_PER_TOKEN)
+                ),
             )
             self.scene_text.append(new_scene_text)
+        # Summarize the scene
+        self.scene_summary = summarize_text(self.scene_text)
+        # Visually describe the scene
+        self.scene_visual = visually_summarize(self.scene_text[2])
 
     def __str__(self) -> str:
         full_scene: str = ""

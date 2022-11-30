@@ -30,11 +30,11 @@ def random_occupation(job_interests: List[str]) -> str:
     return str(random.choice(jobs).find("a").text.strip("s"))
 
 
-def random_fullname(self: "Character", tp_param: str) -> str:
+def random_fullname(ethnicity: str, gender: str, tp_param: str) -> str:
     """Generate a random full name for the character."""
     url = (
-        f"{REEDSY_BASE_URL}{tp_param}/{self.ethnicity}/?filter="
-        f"{self.gender}&commit=Generate%20names"
+        f"{REEDSY_BASE_URL}{tp_param}/{ethnicity}/?filter="
+        f"{gender}&commit=Generate%20names"
     )
     r = requests.get(url, headers=HEADERS)
     soup = BeautifulSoup(r.text, "html.parser")
@@ -42,7 +42,7 @@ def random_fullname(self: "Character", tp_param: str) -> str:
     # Name
     if nc is None:
         print(f"Error with URL: {url}")
-        if self.gender == "Male":
+        if gender == "Male":
             fullname = "John Doe"
         else:
             fullname = "Jane Doe"
@@ -224,13 +224,20 @@ class Character:
         "Writer",
     ]
 
-    def __init__(self, era: Optional[str] = None):
+    def __init__(
+        self,
+        era: Optional[str] = None,
+        ethnicity: Optional[str] = None,
+        gender: Optional[str] = None,
+        fullname: Optional[str] = None,
+        age: Optional[int] = None,
+    ) -> None:
         self.era = era
-        # Start with a random ethnicity
-        self.ethnicity = random.choice(self.ethnicities)
-        # Set a random gender and pronoun
-        self.gender = random.choice(self.genders)
-        self.pronoun = "He" if self.gender == "Male" else "She"
+        # Select a random ethnicity if none is provided
+        if ethnicity is None:
+            self.ethnicity = random.choice(self.ethnicities)
+        else:
+            self.ethnicity = ethnicity
         # Set era-specific values
         if self.era == "Prehistoric":
             self.ethnicity = "old-norse"
@@ -263,9 +270,19 @@ class Character:
             self.era = "Contemporary"
             tp_param = "language"
             max_age = 100
-
-        # Name
-        self.fullname = random_fullname(self, tp_param)
+        # Set a random gender and pronoun if none provided
+        if gender is None:
+            self.gender = random.choice(self.genders)
+        else:
+            self.gender = gender
+        self.pronoun = "He" if self.gender == "Male" else "She"
+        # Set a random name if none is provided
+        if fullname is None:
+            self.fullname = random_fullname(
+                self.ethnicity, self.gender, tp_param
+            )
+        else:
+            self.fullname = fullname
         if (
             self.ethnicity == "chinese"
             or self.ethnicity == "japanese"
@@ -280,10 +297,12 @@ class Character:
             self.firstname = self.fullname.split(" ")[0]
             self.lastname = self.fullname.split(" ")[1]
         self.name = self.firstname
+        # Set a random age if none provided
+        if age is None:
+            self.age = random.randint(5, max_age)
+        else:
+            self.age = age
 
-        # Appearance
-        # Age
-        self.age = random.randint(5, max_age)
         # Height
         self.height = random.choice(self.heights)
         # Weight

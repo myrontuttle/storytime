@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import logging
 import os.path
@@ -8,6 +8,7 @@ import jsonpickle
 
 from storytime.character import Character
 from storytime.gpt3 import generate_text
+from storytime.image_set import ImageSet
 from storytime.scene import Scene
 from storytime.time_period import TimePeriod
 
@@ -24,6 +25,26 @@ def load_from_json(filename: str) -> "Story":
     with open(filename) as read_file:
         new_story = jsonpickle.decode(read_file.read())
     return new_story
+
+
+def get_save_path():
+    dir_path = os.getcwd()
+    dir_name = os.path.basename(dir_path)
+    parent_path = os.path.dirname(dir_path)
+    par_dir = os.path.basename(parent_path)
+    if dir_name == "storytime":
+        if par_dir == "storytime":
+            # Save the story in the parent directory
+            save_path = os.path.join(parent_path, "stories", "")
+        else:
+            # Save the story in the current directory
+            save_path = os.path.join(dir_path, "stories", "")
+    elif dir_name == "unit":
+        grandparent_path = os.path.dirname(parent_path)
+        save_path = os.path.join(grandparent_path, "stories", "")
+    else:
+        save_path = os.path.join(dir_path, "stories", "")
+    return save_path
 
 
 class Story:
@@ -45,143 +66,141 @@ class Story:
     # Genres
     # https://storygrid.com/genres-of-writing/
     genres = [
-        "Action",
-        "Adventure",
-        "Comedy",
-        "Crime",
-        "Drama",
-        "Fantasy",
-        "Historical",
-        "Horror",
-        "Mystery",
-        "Paranormal",
-        "Romance",
-        "Science fiction",
-        "Thriller",
-        "Western",
+        "action",
+        "adventure",
+        "comedy",
+        "crime",
+        "drama",
+        "fantasy",
+        "historical",
+        "horror",
+        "mystery",
+        "paranormal",
+        "romance",
+        "science fiction",
+        "thriller",
+        "western",
     ]
 
     # Thematic concepts
     # https://michaelbjorkwrites.com/2019/09/26/story-themes-list-ideas-for
     # -your-novel/
     thematic_concepts = [
-        # Experiences
-        "Aging",
-        "Childhood",
-        "Coming of Age",
-        "Disillusionment",
-        "Friendship",
-        "Growth",
-        "Healing",
-        "Isolation",
-        "Loss",
-        "Loss of Innocence",
-        "Overcoming Adversity",
-        "Parenthood",
-        "Redemption",
-        "Revenge",
-        "Self-discovery",
-        "Survival",
-        "Tragedy",
-        # Feelings
-        "Apathy",
-        "Compassion",
-        "Despair",
-        "Fear",
-        "Grief",
-        "Jealousy",
-        "Joy",
-        "Loneliness",
-        "Love",
-        "Regret",
-        # Gender & Sexuality
-        "Androgyny",
-        "Femininity",
-        "Gender Identity",
-        "Masculinity",
-        "Sexuality",
-        # Human Perception
-        "Dreams",
-        "Identity",
-        "Memory",
-        "Perception vs. Reality",
-        "Subjectivity",
-        # Mental Health & Neurodiversity
-        "Autism",
-        "Bipolarity",
-        "Depression",
-        "Obsessive Compulsive Disorder",
-        "Suicide",
-        # Natural Forces
-        "Death",
-        "Fate",
-        "Nature",
-        "Passage of Time",
-        # Politics & Economics
-        "Capitalism",
-        "Communism",
-        "Conservation",
-        "Democracy",
-        "Fascism",
-        "Freedom",
-        "Justice",
-        "Nationalism",
-        "Peace",
-        "Propaganda",
-        "Radicalism",
-        "Socialism",
-        "War",
-        # Religion & Philosophy
-        "Atheism",
-        "Determinism",
-        "Ethics",
-        "Faith",
-        "Free Will",
-        "Good vs. Evil",
-        "Skepticism",
-        "Metaphysics",
-        "Nature vs. Nurture",
-        "Pacifism",
-        "Religion",
-        "Soul / Consciousness",
-        # Social Issues
-        "Abuse of Power",
-        "Homophobia",
-        "Immigration",
-        "Inequality",
-        "Oppression",
-        "Poverty",
-        "Progress & Regress",
-        "Privilege",
-        "Racism",
-        "Rights of the Oppressed",
-        "Sexism",
-        "Transphobia",
-        "Working Class Struggles",
-        # Society & Culture
-        "Conformity",
-        "Familial Obligations",
-        "Honor",
-        "Individualism",
-        "Responsibility",
-        "Tradition",
-        # Technology & Science
-        # TODO: Consider removing these or only making them available for
-        #  Contemporary and Future stories.
-        "Artificial Intelligence",
-        "Augmented Reality",
-        "Genetic Engineering",
-        "Human Integration with Technology",
-        "Information Privacy",
-        "Weapons of Mass Destruction",
-        # Virtues & Vices
-        "Ambition",
-        "Corruption",
-        "Courage",
-        "Forgiveness",
-        "Mercy",
-        "Power",
-        "Pride",
+        # experiences
+        "aging",
+        "childhood",
+        "coming of age",
+        "disillusionment",
+        "friendship",
+        "growth",
+        "healing",
+        "isolation",
+        "loss",
+        "loss of innocence",
+        "overcoming adversity",
+        "parenthood",
+        "redemption",
+        "revenge",
+        "self-discovery",
+        "survival",
+        "tragedy",
+        # feelings
+        "apathy",
+        "compassion",
+        "despair",
+        "fear",
+        "grief",
+        "jealousy",
+        "joy",
+        "loneliness",
+        "love",
+        "regret",
+        # gender & sexuality
+        "androgyny",
+        "femininity",
+        "gender identity",
+        "masculinity",
+        "sexuality",
+        # human perception
+        "dreams",
+        "identity",
+        "memory",
+        "perception vs. reality",
+        "subjectivity",
+        # mental health & neurodiversity
+        "autism",
+        "bipolarity",
+        "depression",
+        "obsessive compulsive disorder",
+        "suicide",
+        # natural forces
+        "death",
+        "fate",
+        "nature",
+        "passage of time",
+        # politics & economics
+        "capitalism",
+        "communism",
+        "conservation",
+        "democracy",
+        "fascism",
+        "freedom",
+        "justice",
+        "nationalism",
+        "peace",
+        "propaganda",
+        "radicalism",
+        "socialism",
+        "war",
+        # religion & philosophy
+        "atheism",
+        "determinism",
+        "ethics",
+        "faith",
+        "free will",
+        "good vs. evil",
+        "skepticism",
+        "metaphysics",
+        "nature vs. nurture",
+        "pacifism",
+        "religion",
+        "soul / consciousness",
+        # social issues
+        "abuse of power",
+        "homophobia",
+        "immigration",
+        "inequality",
+        "oppression",
+        "poverty",
+        "progress & regress",
+        "privilege",
+        "racism",
+        "rights of the oppressed",
+        "sexism",
+        "transphobia",
+        "working class struggles",
+        # society & culture
+        "conformity",
+        "familial obligations",
+        "honor",
+        "individualism",
+        "responsibility",
+        "tradition",
+        # technology & science
+        "artificial intelligence",
+        "augmented reality",
+        "genetic engineering",
+        "human integration with technology",
+        "information privacy",
+        "weapons of mass destruction",
+        # virtues & vices
+        "ambition",
+        "corruption",
+        "courage",
+        "forgiveness",
+        "mercy",
+        "power",
+        "pride",
     ]
 
     # Five act structure plot elements
@@ -265,7 +284,7 @@ class Story:
 
     # Three act structure plot elements
     three_act_plot_elements = {
-        "Exposition": "The status quo or ‘ordinary world’ is established.",
+        "Exposition": "The status quo or 'ordinary world' is established.",
         "Inciting Incident": "An event happens that sets the story in motion.",
         "Plot Point One": "The protagonist decides to tackle the challenge "
         "head-on.",
@@ -373,56 +392,82 @@ class Story:
         "Save the Cat": save_the_cat_plot_elements,
     }
 
+    MAX_SCENES_PER_ACT = 2  # Should be even for scene and sequel
+    MAX_TERTIARY_CHARACTERS = 3  # In addition to 6 primary characters
+
     def __init__(
         self,
         target_audience: Optional[str] = None,
         genre: Optional[str] = None,
+        themes: Optional[List[str]] = None,
+        narrative_structure: Optional[str] = None,
+        time_period: Optional[TimePeriod] = None,
+        characters: Dict[str, Character] = None,
+        area: Optional[str] = None,
+        with_images: bool = False,
+        medium: Optional[str] = None,
+        style: Optional[str] = None,
     ) -> None:
         """Generate a story based on the target audience and genre."""
-        # Select a target audience
+        # Select a target audience if none is provided
         if target_audience is None:
             self.target_audience = random.choice(self.target_audiences)
         else:
             self.target_audience = target_audience
 
-        # Generate a random genre
+        # Select a random genre if none is provided
         if genre is None:
             self.genre = random.choice(self.genres)
         else:
             self.genre = genre
 
-        # Generate 2 random thematic concepts
-        self.themes = []
-        for i in range(2):
-            self.themes.append(random.choice(self.thematic_concepts))
+        # Generate 2 random thematic concepts if none are provided
+        if themes is None:
+            self.themes = []
+            for i in range(2):
+                self.themes.append(random.choice(self.thematic_concepts))
+        else:
+            self.themes = themes
 
         # Make a thematic statement
         # ts_prompt = f"Write a thematic statement based on the concepts of " \
         #            f" {self.themes[0]} and {self.themes[1]}."
         # self.thematic_statement = self.gpt3.generate_text(ts_prompt)
 
-        # Get a random narrative structure and associated plot elements
-        self.narrative_structure = random.choice(
-            list(self.narrative_structures.keys())
-        )
+        # Get a random narrative structure if none is provided
+        if narrative_structure is None:
+            self.narrative_structure = random.choice(
+                list(self.narrative_structures.keys())
+            )
+        else:
+            self.narrative_structure = narrative_structure
+        # Get associated plot elements for narrative structure
         self.plot_elements = self.narrative_structures[
             self.narrative_structure
         ]
 
-        # Get a random time period
-        self.time_period = TimePeriod()
+        # Get a random time period if none is provided
+        if time_period is None:
+            self.time_period = TimePeriod()
+        else:
+            self.time_period = time_period
 
         # Generate some characters
-        self.characters = {
-            "protagonist": Character(self.time_period.era),
-            "antagonist": Character(self.time_period.era),
-            "deuteragonist": Character(self.time_period.era),
-            "confidante": Character(self.time_period.era),
-            "love interest": Character(self.time_period.era),
-            "foil": Character(self.time_period.era),
-        }
-        for i in range(random.randint(0, 3)):
-            self.characters[f"tertiary {i}"] = Character(self.time_period.era)
+        if characters is None:
+            self.characters = {
+                "protagonist": Character(self.time_period.era),
+                "antagonist": Character(self.time_period.era),
+                "deuteragonist": Character(self.time_period.era),
+                "confidante": Character(self.time_period.era),
+                "love interest": Character(self.time_period.era),
+                "foil": Character(self.time_period.era),
+            }
+            for i in range(random.randint(0, self.MAX_TERTIARY_CHARACTERS)):
+                self.characters[f"tertiary {i}"] = Character(
+                    self.time_period.era
+                )
+        else:
+            self.characters = characters
 
         # Generate the synopsis
         self.synopsis = (
@@ -440,12 +485,22 @@ class Story:
         self.title = generate_text(
             f"Write a title for {self.synopsis}", max_tokens=30
         ).strip()
+        if ":" in self.title:
+            self.subtitle = self.title.split(":")[1].strip()
+            self.title = self.title.split(":")[0].strip()
 
         # Generate the plot as a series of acts with scenes
         self.acts = []
         for act_description in self.plot_elements.values():
             scenes: List["Scene"] = []
-            total_scenes_in_act = random.randrange(2, 8, 2)
+            if self.MAX_SCENES_PER_ACT == 2:
+                total_scenes_in_act = 2
+            else:
+                total_scenes_in_act = random.randrange(
+                    2,
+                    self.MAX_SCENES_PER_ACT,
+                    2,
+                )
             logger.info(
                 f"Generating {total_scenes_in_act} scenes for "
                 f"{act_description}."
@@ -454,18 +509,37 @@ class Story:
             for i in range(total_scenes_in_act):
                 scenes.append(
                     Scene(
-                        self.target_audience,
-                        self.genre,
-                        self.themes,
-                        act_description,
-                        self.time_period,
-                        self.characters,
-                        total_scenes_in_act,
-                        scenes,
+                        target_audience=self.target_audience,
+                        genre=self.genre,
+                        themes=self.themes,
+                        act_description=act_description,
+                        time_period=self.time_period,
+                        characters=self.characters,
+                        total_scenes_in_act=total_scenes_in_act,
+                        previous_scenes=scenes,
+                        area=area,
                     )
                 )
             # Add the scenes to the act
             self.acts.append(scenes)
+
+        # Add images if requested
+        if with_images:
+            self.with_images = with_images
+            # TODO: Define medium and style for image set based on genre and
+            #  era
+            self.image_set = ImageSet(
+                medium=medium,
+                style=style,
+            )
+            # Generate an image for each scene
+            for act in self.acts:
+                for scene in act:
+                    label = (
+                        f"A{self.acts.index(act) + 1}S"
+                        f"{act.index(scene) + 1}"
+                    )
+                    self.image_set.add_scene_image(label, scene)
 
     def __str__(self):
         """Return a string representation of the story."""
@@ -477,23 +551,35 @@ class Story:
                 full_story += str(scene) + "\n\n"
         return full_story
 
-    def save_as_json(self):
+    def save_as_json(self) -> str:
         """Save a JSON representation of the story."""
-        if not os.path.exists("../stories/"):
-            os.mkdir("../stories/")
+        save_path = get_save_path()
+        if not os.path.exists(save_path):
+            os.mkdir(save_path)
         filename = (
-            f"../stories/"
+            f"{save_path}"
             f"{''.join(c for c in self.title if c.isalnum())}.json"
         )
         with open(filename, "w") as write_file:
             write_file.write(jsonpickle.encode(self, keys=True, indent=4))
         logger.info(f"Story written to {filename}")
+        return filename
+
+    def download_image_set(self):
+        """Download images for the story."""
+        if self.with_images:
+            story_image_dir = os.path.join(
+                get_save_path(),
+                f"{''.join(c for c in self.title if c.isalnum())}Images",
+                "",
+            )
+            if not os.path.exists(story_image_dir):
+                os.mkdir(story_image_dir)
+            self.image_set.save_images(story_image_dir)
 
 
 if __name__ == "__main__":
     # story = Story()
     # story.save_as_json()
-    story = load_from_json(
-        "../stories/AlphonsesStruggleAFantasyStoryofOppressionandPacifism.json"
-    )
-    print(story)
+    story = load_from_json(os.path.join(get_save_path(), "TheLadysWar.json"))
+    story.download_image_set()
