@@ -9,6 +9,7 @@ import jsonpickle
 from storytime.character import Character
 from storytime.gpt3 import generate_text
 from storytime.image_set import ImageSet
+from storytime.narrator import Narrator
 from storytime.scene import Scene
 from storytime.time_period import TimePeriod
 
@@ -533,6 +534,7 @@ class Story:
                 style=style,
             )
             # Generate an image for each scene
+            logger.info("Generating images for each scene.")
             for act in self.acts:
                 for scene in act:
                     label = (
@@ -577,9 +579,39 @@ class Story:
                 os.mkdir(story_image_dir)
             self.image_set.save_images(story_image_dir)
 
+    def add_narration(self):
+        """Add narration to the story."""
+        # Generate a narration for each scene part
+        logger.info("Generating narration for each scene.")
+        narrator = Narrator()
+        story_audio_dir = os.path.join(
+            get_save_path(),
+            f"{''.join(c for c in self.title if c.isalnum())}Audio",
+            "",
+        )
+        if not os.path.exists(story_audio_dir):
+            os.mkdir(story_audio_dir)
+        for act in self.acts:
+            for scene in act:
+                for part in scene.scene_text:
+                    label = (
+                        f"A{self.acts.index(act) + 1}S"
+                        f"{act.index(scene) + 1}P"
+                        f"{scene.scene_text.index(part) + 1}"
+                    )
+                    logger.info(f"Generating narration for {label}.")
+                    narrator.synthesize_speech(
+                        text_input=part,
+                        voice_gender="MALE",
+                        output_file=f"{story_audio_dir}{label}.mp3",
+                    )
+
 
 if __name__ == "__main__":
     # story = Story()
     # story.save_as_json()
-    story = load_from_json(os.path.join(get_save_path(), "TheLadysWar.json"))
-    story.download_image_set()
+    story = load_from_json(
+        os.path.join(get_save_path(), "TorysJourneyofLoveandFriendship.json")
+    )
+    story.add_narration()
+    # story.download_image_set()

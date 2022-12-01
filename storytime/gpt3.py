@@ -7,7 +7,7 @@ import openai
 from backoff import expo, on_exception
 from ratelimit import RateLimitException, limits
 
-MODEL = "text-curie-001"  # "text-davinci-003"
+MODEL = "text-davinci-003"  # For testing use: "text-curie-001"  #
 MAX_TOKENS = 2048
 MINUTE = 60
 MAX_IMAGE_PROMPT_LENGTH = 1000

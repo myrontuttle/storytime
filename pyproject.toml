@@ -38,6 +38,7 @@ beautifulsoup4 = "^4.11.1"
 jsonpickle = "^2.2.0"
 ratelimit = "^2.2.1"
 backoff = "^2.2.1"
+google-cloud-texttospeech = "^2.12.3"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.1"

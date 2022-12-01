@@ -12,13 +12,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 story_types = {
-    "fairy tale": "Fairy tales are short and interesting "
-    "tales, featuring folkloric fantasy "
-    "characters. These tales "
-    "transport you to an unreal world that has "
-    "no definite locality or creatures. This "
-    "imaginary world is full of jaw-dropping "
-    "surprises that will keep kids entertained. "
+    "fairy tale": "Fairy tales are short and interesting tales, featuring "
+    "folkloric fantasy characters."
 }
 
 
@@ -48,7 +43,7 @@ def generate_story(
             area="medieval",
             with_images=with_images,
             medium="digital art",
-            style="disney",
+            style="pixar",
         )
     else:
         logger.error(
@@ -130,7 +125,11 @@ def generate_character(character_type: str) -> Character:
 
 
 if __name__ == "__main__":
-    fairy_tale = generate_story("fairy tale", with_images=True)
+    fairy_tale = generate_story(
+        "fairy tale",
+        with_images=True,
+    )
     fairy_tale.save_as_json()
     fairy_tale.download_image_set()
+    fairy_tale.add_narration()
     print(fairy_tale)
