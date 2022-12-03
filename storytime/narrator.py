@@ -25,6 +25,7 @@ class Narrator:
     def __init__(self, language_code="en-US"):
         """Instantiates a client."""
         self.client = texttospeech.TextToSpeechClient()
+        self.name = "Google Cloud Text-to-Speech"
         # Build the voice request, select the language code ("en-US") and
 
         # Select the type of audio file you want returned
@@ -39,7 +40,7 @@ class Narrator:
         text_input: str,
         voice_gender: str,
         output_file: str,
-    ):
+    ) -> None:
         """Synthesizes speech from the input string of text or ssml.
 
         Note: ssml must be well-formed according to:
@@ -86,7 +87,7 @@ class Narrator:
         with open(output_file, "wb") as out:
             # Write the response to the output file.
             out.write(response.audio_content)
-            print(f"Audio content written to file '{output_file}'")
+            logger.info(f"Audio content written to file '{output_file}'")
 
 
 if __name__ == "__main__":

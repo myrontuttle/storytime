@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Dict, Optional
 
 import random
 
@@ -87,7 +87,7 @@ class ImageSet:
             self.style = random.choice(self.art_styles)
         else:
             self.style = style
-        self.images = {}
+        self.images: Dict[str, str] = {}
 
     def add_scene_image(self, label: str, scene: "Scene") -> None:
         """Add a generated image to the ImageSet based on a scene."""

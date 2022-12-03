@@ -50,7 +50,7 @@ def generate_text(
             frequency_penalty=0,
             presence_penalty=0,
         )
-        return response["choices"][0]["text"]
+        return str(response["choices"][0]["text"])
     except Exception as e:
         logger.error(e)
         logger.debug(
@@ -73,7 +73,7 @@ def generate_image(prompt: str) -> str:
             n=1,
             size="512x512",
         )
-        return response["data"][0]["url"]
+        return str(response["data"][0]["url"])
     except Exception as e:
         logger.error(e)
         logger.debug(f" from: {prompt}")

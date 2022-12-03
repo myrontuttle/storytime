@@ -48,6 +48,24 @@ def get_save_path():
     return save_path
 
 
+def get_story_image_dir(title: str) -> str:
+    story_image_dir = os.path.join(
+        get_save_path(),
+        f"{''.join(c for c in title if c.isalnum())}Images",
+        "",
+    )
+    return story_image_dir
+
+
+def get_story_audio_dir(title: str) -> str:
+    story_audio_dir = os.path.join(
+        get_save_path(),
+        f"{''.join(c for c in title if c.isalnum())}Audio",
+        "",
+    )
+    return story_audio_dir
+
+
 class Story:
     """A story is a collection of scenes."""
 
@@ -403,7 +421,7 @@ class Story:
         themes: Optional[List[str]] = None,
         narrative_structure: Optional[str] = None,
         time_period: Optional[TimePeriod] = None,
-        characters: Dict[str, Character] = None,
+        characters: Optional[Dict[str, Character]] = None,
         area: Optional[str] = None,
         with_images: bool = False,
         medium: Optional[str] = None,
@@ -483,12 +501,17 @@ class Story:
         )
 
         # Write a title
-        self.title = generate_text(
-            f"Write a title for {self.synopsis}", max_tokens=30
-        ).strip()
+        self.title = (
+            generate_text(f"Write a title for {self.synopsis}", max_tokens=30)
+            .strip()
+            .replace('"', "")
+        )
         if ":" in self.title:
             self.subtitle = self.title.split(":")[1].strip()
             self.title = self.title.split(":")[0].strip()
+
+        # Author
+        self.author = "GPT-3"
 
         # Generate the plot as a series of acts with scenes
         self.acts = []
@@ -527,6 +550,7 @@ class Story:
         # Add images if requested
         if with_images:
             self.with_images = with_images
+            self.illustrator = "DALL-E"
             # TODO: Define medium and style for image set based on genre and
             #  era
             self.image_set = ImageSet(
@@ -570,27 +594,32 @@ class Story:
     def download_image_set(self):
         """Download images for the story."""
         if self.with_images:
-            story_image_dir = os.path.join(
-                get_save_path(),
-                f"{''.join(c for c in self.title if c.isalnum())}Images",
-                "",
-            )
-            if not os.path.exists(story_image_dir):
-                os.mkdir(story_image_dir)
-            self.image_set.save_images(story_image_dir)
+            image_dir = get_story_image_dir(self.title)
+            if not os.path.exists(image_dir):
+                os.mkdir(image_dir)
+            self.image_set.save_images(image_dir)
 
     def add_narration(self):
         """Add narration to the story."""
-        # Generate a narration for each scene part
-        logger.info("Generating narration for each scene.")
+        logger.info("Generating narration.")
         narrator = Narrator()
-        story_audio_dir = os.path.join(
-            get_save_path(),
-            f"{''.join(c for c in self.title if c.isalnum())}Audio",
-            "",
-        )
+        story_audio_dir = get_story_audio_dir(self.title)
         if not os.path.exists(story_audio_dir):
             os.mkdir(story_audio_dir)
+        # Generate narration for the title
+        label = "Title"
+        title_text = (
+            f"{self.title}: {self.subtitle}. " f"Written by {self.author}."
+        )
+        if self.with_images:
+            title_text += f" Illustrated by {self.illustrator}."
+        title_text += f" Narrated by {narrator.name}."
+        narrator.synthesize_speech(
+            text_input=title_text,
+            voice_gender="MALE",
+            output_file=f"{story_audio_dir}{label}.mp3",
+        )
+        # Generate narration for each scene
         for act in self.acts:
             for scene in act:
                 for part in scene.scene_text:
@@ -605,6 +634,31 @@ class Story:
                         voice_gender="MALE",
                         output_file=f"{story_audio_dir}{label}.mp3",
                     )
+        outro_text = (
+            f"This is the end of {self.title} by {self.author}. "
+            f"Thank you for listening."
+        )
+        label = "Outro"
+        narrator.synthesize_speech(
+            text_input=outro_text,
+            voice_gender="MALE",
+            output_file=f"{story_audio_dir}{label}.mp3",
+        )
+
+    def get_narration_file_list(self) -> List[str]:
+        """Get the narration files for the story."""
+        story_audio_dir = os.path.join(
+            get_save_path(),
+            f"{''.join(c for c in self.title if c.isalnum())}Audio",
+            "",
+        )
+        audio_files = []
+        if os.path.exists(story_audio_dir):
+            audio_files.append(os.path.join(story_audio_dir, "Title.mp3"))
+        for file in os.listdir(story_audio_dir):
+            if file.startswith("A") and file.endswith(".mp3"):
+                audio_files.append(os.path.join(story_audio_dir, file))
+        return audio_files
 
 
 if __name__ == "__main__":

@@ -1,12 +1,13 @@
 import os
 
 import pytest
+from pytest_mock import MockerFixture
 
 from storytime import story
 
 
 @pytest.fixture
-def test_story(mocker) -> story.Story:
+def test_story(mocker: MockerFixture) -> story.Story:
     mocker.patch(
         "storytime.story.generate_text",
         return_value="Test Story:Text From Gpt3's Mock",
@@ -22,7 +23,7 @@ def test_story(mocker) -> story.Story:
     return story.Story()
 
 
-def test_save_and_load_as_json(test_story) -> None:
+def test_save_and_load_as_json(test_story: story.Story) -> None:
     """Test that a story can be saved as a JSON file and loaded back."""
     errors = []
     # Save mocked story as a JSON file

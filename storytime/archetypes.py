@@ -3,6 +3,7 @@ import logging
 from storytime.character import Character
 from storytime.story import Story
 from storytime.time_period import TimePeriod
+from storytime.video import create_video
 
 logging.basicConfig(
     level=logging.INFO,
@@ -132,4 +133,5 @@ if __name__ == "__main__":
     fairy_tale.save_as_json()
     fairy_tale.download_image_set()
     fairy_tale.add_narration()
+    create_video(fairy_tale)
     print(fairy_tale)
