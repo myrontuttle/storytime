@@ -663,10 +663,10 @@ class Story:
 
 
 if __name__ == "__main__":
-    # story = Story()
-    # story.save_as_json()
-    story = load_from_json(
-        os.path.join(get_save_path(), "TorysJourneyofLoveandFriendship.json")
-    )
+    story = Story()
+    story.save_as_json()
+    # story = load_from_json(
+    #    os.path.join(get_save_path(), "CereliasMagicalSummer.json")
+    # )
+    story.download_image_set()
     story.add_narration()
-    # story.download_image_set()

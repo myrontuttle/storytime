@@ -60,8 +60,14 @@ fairy_tale.download_image_set()
 # Add narration for the story
 fairy_tale.add_narration()
 
+# Add video for the story
+create_video(fairy_tale)
+
 # Print the story
 print(fairy_tale)
+
+# Upload the video to YouTube
+upload_story(fairy_tale, video_file)
 ```
 
 ### Makefile usage

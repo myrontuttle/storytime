@@ -13,7 +13,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 
-from storytime.story import get_save_path, load_from_json
+from storytime.story import Story, get_save_path, load_from_json
 
 # This OAuth 2.0 access scope allows an application to upload files to the
 # authenticated user's YouTube channel, but doesn't allow other types of
@@ -175,20 +175,22 @@ def initialize_upload(
     resumable_upload(insert_request)
 
 
-if __name__ == "__main__":
-    youtube_service = get_authenticated_service()
-    story = load_from_json(
-        os.path.join(get_save_path(), "TorysJourneyofLoveandFriendship.json")
-    )
-    video = os.path.join(
-        get_save_path(), "Tory's Journey of Love and Friendship.mp4"
-    )
+def upload_story(story_to_upload: "Story", video_file: str) -> None:
+    youtube = get_authenticated_service()
     try:
         initialize_upload(
-            youtube_service,
-            video_file=video,
-            title=story.title,
-            description=story.synopsis,
+            youtube,
+            video_file,
+            title=story_to_upload.title,
+            description=story_to_upload.synopsis,
         )
     except HttpError as he:
         logger.error(f"An HTTP error {he.resp.status} occurred:\n{he.content}")
+
+
+if __name__ == "__main__":
+    story = load_from_json(
+        os.path.join(get_save_path(), "CereliasMagicalSummer.json")
+    )
+    video = os.path.join(get_save_path(), "Cerelia's Magical Summer.mp4")
+    upload_story(story, video)

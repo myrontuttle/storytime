@@ -61,6 +61,7 @@ def create_video(story: Story) -> None:
         f"{image_dir}{label}.png" for label in story.image_set.images
     ]
     image_files.insert(0, title_card_path)
+    image_files.append(outro_card_path)
     # Resize the images to VIDEO_HEIGHT x VIDEO_HEIGHT if they're not already
     logger.info("Resizing images")
     for image_file in image_files:
@@ -68,6 +69,7 @@ def create_video(story: Story) -> None:
         if image.size != (VIDEO_HEIGHT, VIDEO_HEIGHT):
             image = image.resize((VIDEO_HEIGHT, VIDEO_HEIGHT))
             image.save(image_file)
+
     # Calculate the duration of each image based on the audio durations
     image_durations = [audio_durations[0]]  # The first image is the title
     for i in range(1, len(audio_durations) - 1, 3):
@@ -145,6 +147,6 @@ def create_outro_card(
 
 if __name__ == "__main__":
     test_story = load_from_json(
-        os.path.join(get_save_path(), "TorysJourneyofLoveandFriendship.json")
+        os.path.join(get_save_path(), "CereliasMagicalSummer.json")
     )
     create_video(test_story)
