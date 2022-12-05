@@ -5,6 +5,8 @@
 ### Module-specific ###
 stories/
 tests/stories/
+storytime/client_secrets.json
+storytime/token.json
 
 ### OSX ###
 # General

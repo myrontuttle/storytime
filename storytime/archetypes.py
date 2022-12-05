@@ -37,7 +37,7 @@ def generate_story(
         story = Story(
             target_audience="children",
             genre="fantasy",
-            themes=["love", "friendship"],
+            themes=["friendship", "dreams"],
             narrative_structure="Five-Act",
             time_period=time_period,
             characters=characters,

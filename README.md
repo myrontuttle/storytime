@@ -34,6 +34,11 @@ poetry add storytime
 - [Python](https://www.python.org/) 3.7.2+
 - [openai-python](https://github.com/openai/openai-python) Requires an [OpenAI API key](https://beta.openai.com/docs/api-reference/authentication) for story and image generation.
 - [googleapis/python-texttospeech](https://github.com/googleapis/python-texttospeech) Requires a [Google Cloud Platform API key](https://cloud.google.com/docs/authentication/getting-started) for narration
+- [moviepy](https://pypi.org/project/moviepy/) To generate videos (requires [ffmpeg](https://ffmpeg.org/) and [ImageMagick](https://imagemagick.org/index.php))
+- [google-api-python-client](https://github.com/googleapis/google-api-python-client) and [google-auth-httplib2](https://pypi.org/project/google-auth-httplib2/) for uploading to YouTube
+- - It is also necesary to [Register your application with Google](https://developers.google.com/youtube/registering_an_application) so that it can use the OAuth 2.0 protocol to authorize access to user data,
+- - It is also necessary to verify the YouTube account that will be used to upload videos. See [YouTube's documentation](https://support.google.com/youtube/answer/72851?hl=en) for more information.
+- - Each API project must also [undergo an audit](https://support.google.com/youtube/contact/yt_api_form) to verify compliance with the [Terms of Service](https://developers.google.com/youtube/terms/api-services-terms-of-service).
 
 ## Usage
 
@@ -64,7 +69,7 @@ print(fairy_tale)
 [`Makefile`](https://github.com/myrontuttle/storytime/blob/master/Makefile) contains a lot of functions for faster development.
 
 <details>
-<summary>1. Download and remove Poetry</summary>
+<summary>1. Download or remove Poetry</summary>
 <p>
 
 To download and install Poetry run:

@@ -655,9 +655,10 @@ class Story:
         audio_files = []
         if os.path.exists(story_audio_dir):
             audio_files.append(os.path.join(story_audio_dir, "Title.mp3"))
-        for file in os.listdir(story_audio_dir):
-            if file.startswith("A") and file.endswith(".mp3"):
-                audio_files.append(os.path.join(story_audio_dir, file))
+            for file in os.listdir(story_audio_dir):
+                if file.startswith("A") and file.endswith(".mp3"):
+                    audio_files.append(os.path.join(story_audio_dir, file))
+            audio_files.append(os.path.join(story_audio_dir, "Outro.mp3"))
         return audio_files
 
 
