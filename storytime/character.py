@@ -231,6 +231,7 @@ class Character:
         gender: Optional[str] = None,
         fullname: Optional[str] = None,
         age: Optional[int] = None,
+        occupation: Optional[str] = None,
     ) -> None:
         self.era = era
         # Select a random ethnicity if none is provided
@@ -445,6 +446,8 @@ class Character:
                     self.occupation = random.choice(self.generic_jobs)
             if self.age > 65:
                 self.occupation = f"Retired {self.occupation}"
+        if occupation is not None:
+            self.occupation = occupation
 
     def __str__(self) -> str:
         """Return a string representation of the character."""
