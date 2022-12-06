@@ -156,7 +156,7 @@ def generate_character(character_type: str) -> Character:
     elif character_type == "engineer":
         character = Character(
             era="Future",
-            ethnicity="indian",
+            ethnicity="hindi",
             gender="Female",
             age=26,
             occupation="engineer",
@@ -164,7 +164,7 @@ def generate_character(character_type: str) -> Character:
     elif character_type == "chief medical officer":
         character = Character(
             era="Future",
-            ethnicity="chinese",
+            ethnicity="korean",
             gender="Female",
             age=40,
             occupation="chief medical officer",
@@ -204,7 +204,7 @@ def generate_character(character_type: str) -> Character:
 
 if __name__ == "__main__":
     fairy_tale = generate_story(
-        "fairy tale",
+        "science fiction comedy",
         with_images=True,
     )
     fairy_tale.save_as_json()
