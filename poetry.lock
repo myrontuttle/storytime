@@ -360,14 +360,14 @@ tool = ["click (>=6.0.0)"]
 
 [[package]]
 name = "google-cloud-texttospeech"
-version = "2.12.3"
-description = "Google Cloud Text-to-Speech API client library"
+version = "2.13.0"
+description = "Google Cloud Texttospeech API client library"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
-google-api-core = {version = ">=1.32.0,<2.0.0 || >=2.8.0,<3.0.0dev", extras = ["grpc"]}
+google-api-core = {version = ">=1.34.0,<2.0.0 || >=2.11.0,<3.0.0dev", extras = ["grpc"]}
 proto-plus = ">=1.22.0,<2.0.0dev"
 protobuf = ">=3.19.5,<3.20.0 || >3.20.0,<3.20.1 || >3.20.1,<4.21.0 || >4.21.0,<4.21.1 || >4.21.1,<4.21.2 || >4.21.2,<4.21.3 || >4.21.3,<4.21.4 || >4.21.4,<4.21.5 || >4.21.5,<5.0.0dev"
 
@@ -1277,7 +1277,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.2"
-content-hash = "24f2a960a19ab7b3e2f4913474c28ccbbedef543fa777cc1cd83b038ccad053c"
+content-hash = "528d493d7880862f8992a55d92b6ad2318f7d1f40f5ab47c4e1e7a09bef69dca"
 
 [metadata.files]
 astroid = [
@@ -1451,8 +1451,8 @@ google-auth-oauthlib = [
     {file = "google_auth_oauthlib-0.7.1-py2.py3-none-any.whl", hash = "sha256:860e54c4b58b2664116c9cb44325bc0ec92bcd93e8211698ceea911b1b873b86"},
 ]
 google-cloud-texttospeech = [
-    {file = "google-cloud-texttospeech-2.12.3.tar.gz", hash = "sha256:8274a5fd6d264efe88b7fffec55e6d8b445dea2a351a1e32c5dd1aaeb6c43ed4"},
-    {file = "google_cloud_texttospeech-2.12.3-py2.py3-none-any.whl", hash = "sha256:5fd11e1dbc8bfcf6466ae3309b3592f4d5080939426734d43b2b81f1f99ab684"},
+    {file = "google-cloud-texttospeech-2.13.0.tar.gz", hash = "sha256:8e90f01114cb4664b598ed8ed8e6e865ae8001487793f0f283bed30954ea2e89"},
+    {file = "google_cloud_texttospeech-2.13.0-py2.py3-none-any.whl", hash = "sha256:5b9729d0c8136c3e5681b3d165cddf753e49861d69b571875bded80dee385fb0"},
 ]
 googleapis-common-protos = [
     {file = "googleapis-common-protos-1.57.0.tar.gz", hash = "sha256:27a849d6205838fb6cc3c1c21cb9800707a661bb21c6ce7fb13e99eb1f8a0c46"},
